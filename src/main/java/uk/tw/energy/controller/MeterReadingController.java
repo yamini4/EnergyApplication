@@ -18,35 +18,37 @@ import uk.tw.energy.service.MeterReadingService;
 @RequestMapping("/readings")
 public class MeterReadingController {
 
-    private final MeterReadingService meterReadingService;
+	private final MeterReadingService meterReadingService;
 
-    public MeterReadingController(MeterReadingService meterReadingService) {
-        this.meterReadingService = meterReadingService;
-    }
+	public MeterReadingController(MeterReadingService meterReadingService) {
+		this.meterReadingService = meterReadingService;
+	}
 
-    @PostMapping("/store")
-    public ResponseEntity storeReadings(@RequestBody MeterReadings meterReadings) {
-        if (!isMeterReadingsValid(meterReadings)) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        meterReadingService.storeReadings(meterReadings.smartMeterId(), meterReadings.electricityReadings());
-        return ResponseEntity.ok().build();
-    }
+	@PostMapping("/store")
+	public ResponseEntity<String> storeReadings(@RequestBody MeterReadings meterReadings) {
+		if (!isMeterReadingsValid(meterReadings)) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid Input");
+		}
+		Optional<List<ElectricityReading>> readings = meterReadingService.getReadings(meterReadings.smartMeterId());
+		if (readings.isPresent()) {
+			return ResponseEntity.ok().body("SmartMeterId Already existed");
+		}
 
-    private boolean isMeterReadingsValid(MeterReadings meterReadings) {
-        String smartMeterId = meterReadings.smartMeterId();
-        List<ElectricityReading> electricityReadings = meterReadings.electricityReadings();
-        return smartMeterId != null
-                && !smartMeterId.isEmpty()
-                && electricityReadings != null
-                && !electricityReadings.isEmpty();
-    }
+		meterReadingService.storeReadings(meterReadings.smartMeterId(), meterReadings.electricityReadings());
+		return ResponseEntity.ok().body("Success");
+	}
 
-    @GetMapping("/read/{smartMeterId}")
-    public ResponseEntity readReadings(@PathVariable String smartMeterId) {
-        Optional<List<ElectricityReading>> readings = meterReadingService.getReadings(smartMeterId);
-        return readings.isPresent()
-                ? ResponseEntity.ok(readings.get())
-                : ResponseEntity.notFound().build();
-    }
+	private boolean isMeterReadingsValid(MeterReadings meterReadings) {
+		String smartMeterId = meterReadings.smartMeterId();
+		List<ElectricityReading> electricityReadings = meterReadings.electricityReadings();
+		return smartMeterId != null && !smartMeterId.isEmpty() && electricityReadings != null
+				&& !electricityReadings.isEmpty();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@GetMapping("/read/{smartMeterId}")
+	public ResponseEntity readReadings(@PathVariable String smartMeterId) {
+		Optional<List<ElectricityReading>> readings = meterReadingService.getReadings(smartMeterId);
+		return readings.isPresent() ? ResponseEntity.ok(readings.get()) : ResponseEntity.notFound().build();
+	}
 }
