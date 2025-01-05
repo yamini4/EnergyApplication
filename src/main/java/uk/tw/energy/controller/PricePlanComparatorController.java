@@ -58,6 +58,7 @@ public class PricePlanComparatorController {
         if (!consumptionsForPricePlans.isPresent()) {
             return ResponseEntity.notFound().build();
         }
+        
 
         List<Map.Entry<String, BigDecimal>> recommendations =
                 new ArrayList<>(consumptionsForPricePlans.get().entrySet());
