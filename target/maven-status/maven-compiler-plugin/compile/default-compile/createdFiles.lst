@@ -1,0 +1,12 @@
+uk\tw\energy\controller\PricePlanComparatorController.class
+uk\tw\energy\domain\MeterReadings.class
+uk\tw\energy\SeedingApplicationDataConfiguration.class
+uk\tw\energy\domain\PricePlan.class
+uk\tw\energy\Energy.class
+uk\tw\energy\controller\MeterReadingController.class
+uk\tw\energy\service\MeterReadingService.class
+uk\tw\energy\service\PricePlanService.class
+uk\tw\energy\domain\ElectricityReading.class
+uk\tw\energy\domain\PricePlan$PeakTimeMultiplier.class
+uk\tw\energy\generator\ElectricityReadingsGenerator.class
+uk\tw\energy\service\AccountService.class
