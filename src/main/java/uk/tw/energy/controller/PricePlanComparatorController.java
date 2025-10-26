@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import uk.tw.energy.domain.ElectricityReading;
 import uk.tw.energy.service.AccountService;
+import uk.tw.energy.service.MeterReadingService;
 import uk.tw.energy.service.PricePlanService;
 
 @RestController
@@ -24,10 +27,13 @@ public class PricePlanComparatorController {
 	public static final String PRICE_PLAN_COMPARISONS_KEY = "pricePlanComparisons";
 	private final PricePlanService pricePlanService;
 	private final AccountService accountService;
+	private final MeterReadingService meterReadingService;
 
-	public PricePlanComparatorController(PricePlanService pricePlanService, AccountService accountService) {
+	public PricePlanComparatorController(PricePlanService pricePlanService, AccountService accountService,
+			MeterReadingService meterReadingService) {
 		this.pricePlanService = pricePlanService;
 		this.accountService = accountService;
+		this.meterReadingService = meterReadingService;
 	}
 
 	@GetMapping("/compare-all/{smartMeterId}")
@@ -68,4 +74,5 @@ public class PricePlanComparatorController {
 
 		return ResponseEntity.ok(recommendations);
 	}
+
 }
